@@ -1,7 +1,50 @@
 import React from 'react';
+import axios from "axios";
+import Chart from 'chart.js';
+
+var dataSource = {
+    datasets: [
+        {
+            data: [],
+            backgroundColor: [
+                '#ffcd56', // Yellow
+                '#ff6384', // Pink
+                '#36a2eb', // Light Blue
+                '#fd6b19', // Orange
+                '#33FF6E', // Green
+                '#FF3339', // Red
+                '#FF33F0' // Violet
+            ],
+        }
+    ],
+    labels: []
+};
+
+function createChart() {
+    var ctx = document.getElementById("myChart").getContext("2d");
+    var myPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: dataSource
+    });
+}
+
+function getBudget() {
+    axios.get('http://localhost:4000/budget')
+    .then(function (res) {
+        console.log(res);
+        for (var i = 0; i < res.data.myBudget.length; i++) {
+            dataSource.datasets[0].data[i] = res.data.myBudget[i].budget;
+            dataSource.labels[i] = res.data.myBudget[i].title;
+        }
+        createChart();
+    });
+}
+
+
 
 function HomePage() {
-  return (
+    getBudget();
+    return (
     <div className="container center">
 
         <div className="page-area">
